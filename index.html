@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Type Ahead 👀</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
+    <form class="search-form">
+      <input type="text" class="search" placeholder="City or State" />
+      <ul class="suggestions">
+        <li class="list">Filter for a city</li>
+        <li class="list">or a state</li>
+      </ul>
+    </form>
+    <script>
+      // let places = [];
+
+      async function getPlaces() {
+        const response = await fetch(
+          "https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json"
+        );
+        places = await response.json();
+        console.log(places);
+      }
+
+      // Initialize the places variable
+      getPlaces();
+
+      const searchedPlace = document.querySelector(".search");
+      const suggestions = document.querySelector(".suggestions");
+      const list = suggestions.querySelector(".list");
+
+      searchedPlace.addEventListener("input", function (e) {
+        const inputValue = e.target.value.toLowerCase();
+        let matchedPlaces = filterPlaces(inputValue);
+        displayResults(matchedPlaces);
+      });
+
+      function filterPlaces(query) {
+        return places.filter(
+          (place) =>
+            place.city.toLowerCase().includes(query) ||
+            place.state.toLowerCase().includes(query)
+        );
+      }
+
+      function displayResults(results) {
+        suggestions.innerHTML = ""; // Clear previous results
+
+        if (results.length === 0) {
+          suggestions.innerHTML = "<li>No matches found</li>";
+        } else {
+          results.forEach((result) => {
+            let li = document.createElement("li");
+            li.textContent = `${result.city}, ${result.state},  ${result.population}`;
+            suggestions.appendChild(li);
+          });
+        }
+      }
+    </script>
+  </body>
+</html>
